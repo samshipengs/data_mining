@@ -74,7 +74,32 @@ p(A,D) = \sum p(A,D|T,S,L,E,B,X) & = \sum p(A)p(D|E,B) \\
 querygrain(net12, nodes=c("lung","bronc"), type="marginal")
 ```
 
+### Issue of high dimensionality
 
+We compute joint distribution $p(V)$ by multiplying all the CPTs:<br/>
+<center>$\begin{equation}
+p(V) = p(a)p(t|a)p(s)p(l|s)p(b|s)p(e|t, l)p(d|e, b)p(x|e)
+\end{equation}$,</center> 
+
+this could give us a huge number of CPTs for larger variables each with more states, e.g. 80 variables with 10 states would have $10^{80}$ CPTs. However, gRain still works with 80 nodes in a genetics network.<br/>
+The solution is to *NOT* calcualte the join distribution but perform local computation and send messages between them.  
+
+
+
+
+
+
+
+
+
+
+See details here: http://people.math.aau.dk/~sorenh/misc/2014-useR-GMBN/bayesnet-slides.pdf
+
+
+### Reference:
+https://cran.r-project.org/web/packages/gRain/vignettes/gRain-intro.pdf,
+http://people.math.aau.dk/~sorenh/misc/2014-useR-GMBN/bayesnet-slides.pdf
+https://cran.r-project.org/web/packages/gRain/gRain.pdf
 
 
 

@@ -222,6 +222,19 @@ pEvidence( net12 )</code></pre>
 ## bronc
 ##       yes        no 
 ## 0.8114021 0.1885979</code></pre>
+<div id="issue-of-high-dimensionality" class="section level3">
+<h3>Issue of high dimensionality</h3>
+We compute joint distribution <span class="math inline">\(p(V)\)</span> by multiplying all the CPTs:<br />
+<center>
+<span class="math inline">\(\begin{equation} p(V) = p(a)p(t|a)p(s)p(l|s)p(b|s)p(e|t, l)p(d|e, b)p(x|e) \end{equation}\)</span>,
+</center>
+<p>this could give us a huge number of CPTs for larger variables each with more states, e.g. 80 variables with 10 states would have <span class="math inline">\(10^{80}\)</span> CPTs. However, gRain still works with 80 nodes in a genetics network.<br /> The solution is to <em>NOT</em> calcualte the join distribution but perform local computation and send messages between them.</p>
+<p>See details here: <a href="http://people.math.aau.dk/~sorenh/misc/2014-useR-GMBN/bayesnet-slides.pdf" class="uri">http://people.math.aau.dk/~sorenh/misc/2014-useR-GMBN/bayesnet-slides.pdf</a></p>
+</div>
+<div id="reference" class="section level3">
+<h3>Reference:</h3>
+<p><a href="https://cran.r-project.org/web/packages/gRain/vignettes/gRain-intro.pdf" class="uri">https://cran.r-project.org/web/packages/gRain/vignettes/gRain-intro.pdf</a>, <a href="http://people.math.aau.dk/~sorenh/misc/2014-useR-GMBN/bayesnet-slides.pdf" class="uri">http://people.math.aau.dk/~sorenh/misc/2014-useR-GMBN/bayesnet-slides.pdf</a> <a href="https://cran.r-project.org/web/packages/gRain/gRain.pdf" class="uri">https://cran.r-project.org/web/packages/gRain/gRain.pdf</a></p>
+</div>
 
 
 
