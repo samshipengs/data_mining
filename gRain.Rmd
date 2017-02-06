@@ -1,0 +1,90 @@
+---
+title: "gRain introduction"
+output:
+  html_document: default
+  html_notebook: default
+---
+![](./wheat.jpg)<br/>
+First install packages from bioconductor:
+```
+source("http://bioconductor.org/biocLite.R")
+biocLite(c("graph","RBGL","Rgraphviz"))
+```
+then install "*gBase*", "*gRain*" and "*gRim*.
+```
+install.packages("gBase")
+install.packages("gRain")
+install.packages("gRim")
+```
+*Clinic example of Lauritzen and Spiegelhalter (1988)*
+        
+    “Shortness–of–breath (dyspnoea) may be due to tuberculosis, lung cancer or
+    bronchitis, or none of them, or more than one of them. A recent visit to Asia
+    increases the chances of tuberculosis, while smoking is known to be a risk factor
+    for both lung cancer and bronchitis. The results of a single chest X–ray do not
+    discriminate between lung cancer and tuberculosis, as neither does the presence
+    or absence of dyspnoea.”
+<center> ![](./clinic.png) </center> 
+
+1. Specify conditional probability tables (with values as given in Lauritzen and Spiegelhalter
+(1988)):
+```{r, message=FALSE}
+library("gRain")
+yn <- c("yes", "no")
+a <- cptable(~ asia, values = c(1, 99), levels = yn)
+t.a <- cptable(~ tub + asia, values = c(5, 95, 1, 99), levels = yn)
+s <- cptable(~ smoke, values = c(5,5), levels = yn)
+l.s <- cptable(~lung|smoke, values=c(1,9,1,99), levels=yn)
+b.s <- cptable(~bronc|smoke, values=c(6,4,3,7), levels=yn)
+e.lt <- cptable(~either|lung:tub,values=c(1,0,1,0,1,0,0,1),levels=yn)
+x.e <- cptable(~xray|either, values=c(98,2,5,95), levels=yn)
+d.be <- cptable(~dysp|bronc:either, values=c(9,1,7,3,8,2,1,9), levels=yn)
+```
+2. Compile list of conditional probability tables and create the network:
+```{r}
+plist <- compileCPT(list(a, t.a, s, l.s, b.s, e.lt, x.e, d.be))
+plist
+plist$asia
+plist$tub
+net1 <- grain(plist)
+net1
+```
+3. The network can be queried to give marginal probabilities:
+```{r}
+querygrain(net1, nodes=c("lung","bronc"), type="marginal")
+```
+4. Likewise, a joint distribution can be obtained:
+```{r}
+querygrain(net1,nodes=c("lung","bronc"), type="joint")
+```
+5. Evidence can be entered in following forms:
+```{r}
+net12 <- setEvidence(net1, nodes=c("asia", "dysp"), states=c("yes", "yes"))
+pEvidence( net12 )
+```
+we can verify this by computing the marginal distribution: <br/>
+$\begin{align}
+p(A,D) = \sum p(A,D|T,S,L,E,B,X) & = \sum p(A)p(D|E,B) \\
+& = p(A=yes)[p(D=yes|E=y,B=y)+p(D=yes|E=y,B=n) \\ 
+& \qquad \qquad +p(D=yes|E=n,B=n)+p(D=n|E=y,B=n)]
+\end{align}$
+
+6. The network can be queried again:
+```{r}
+querygrain(net12, nodes=c("lung","bronc"), type="marginal")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
