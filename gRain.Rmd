@@ -40,7 +40,20 @@ e.lt <- cptable(~either|lung:tub,values=c(1,0,1,0,1,0,0,1),levels=yn)
 x.e <- cptable(~xray|either, values=c(98,2,5,95), levels=yn)
 d.be <- cptable(~dysp|bronc:either, values=c(9,1,7,3,8,2,1,9), levels=yn)
 ```
-2. Compile list of conditional probability tables and create the network:
+2. Compile list of conditional probability tables and create the network:</br>
+    A network is created with the function *grain()* which returns an object of class
+grain. </br>
+The *compileCPT()* function does some checking of the specified CPT’s. (For example, it is checked that the graph defined by the CPT’s is acyclic. Furthermore, the
+specification of *t.a* gives a table with four entries and the variable tub is specified
+to be binary. Hence it is checked that the variable asia is also binary.) The object
+plist is a list of arrays and it is from this list that the grain object is created.</br>
+Compilation of a grain object based on CPTs involves the following steps: First it
+is checked whether the list of CPTs defines a directed acyclic graph (a DAG). If so,
+then the DAG is created; it is moralized and triangulated to form a chordal (triangu-
+lated) graph. The CPTs are transformed into clique potentials defined on the cliques
+of this chordal graph. The chordal graph together with the corresponding clique po-
+tentials are the most essential components of a grain object, and one may indeed
+construct a grain object directly from a specification of these two components.
 ```{r}
 plist <- compileCPT(list(a, t.a, s, l.s, b.s, e.lt, x.e, d.be))
 plist
@@ -49,6 +62,8 @@ plist$tub
 net1 <- grain(plist)
 net1
 ```
+*propagate* If TRUE the network is also propagated meaning that the cliques of the junction tree are calibrated to each other.
+
 3. The network can be queried to give marginal probabilities:
 ```{r}
 querygrain(net1, nodes=c("lung","bronc"), type="marginal")
@@ -74,6 +89,28 @@ p(A,D) = \sum p(A,D|T,S,L,E,B,X) & = \sum p(A)p(D|E,B) \\
 querygrain(net12, nodes=c("lung","bronc"), type="marginal")
 ```
 
+7. Building network from data </br>
+    *chestSim500* </br>
+    Description: Simulated data from the Chest Clinic example (also known as the Asia example) from Lauritzen and Spiegelhalter, 1988.
+    
+```{r}
+library(gRbase)
+data(chestSim500, package='gRbase')
+str(chestSim500)
+head(chestSim500)
+g<-list(~asia, ~tub | asia, ~smoke, ~lung | smoke, ~bronc | smoke,
+        ~either | lung : tub, ~xray | either, ~dysp | bronc : either)
+chestdag<-dagList(g)
+simdagchest <- grain(chestdag, data=chestSim500)
+simdagchest <- compile(simdagchest, propagate=TRUE, smooth=.1)
+querygrain(simdagchest, nodes =c("lung","bronc"),type="marginal")
+```
+
+8. Exercise </br>
+  + Inference: Using the network built in 7 and given the data of a patient that *asia=yes* and *dysp=yes*, what is the probablity of this patient getting *either* *tub* or *lung*, and what is the probablity of getting *bronc=yes*?
+  + If you have extra time left, verify the result in 5. 
+  + If you still have time left, you can go through this genetics examples: https://www.r-bloggers.com/grain-genetics-example/.
+  
 ### Issue of high dimensionality
 
 We compute joint distribution $p(V)$ by multiplying all the CPTs:<br/>
@@ -94,6 +131,7 @@ The solution is to *NOT* calcualte the join distribution but perform local compu
 
 
 See details here: http://people.math.aau.dk/~sorenh/misc/2014-useR-GMBN/bayesnet-slides.pdf
+
 
 
 ### Reference:
