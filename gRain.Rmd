@@ -109,6 +109,11 @@ querygrain(simdagchest, nodes =c("lung","bronc"),type="marginal")
 8. Exercise </br>
   + Inference: Using the network built in 7 and given the data of a patient that *asia=yes* and *dysp=yes*, what is the probablity of this patient getting *either* *tub* or *lung*, and what is the probablity of getting *bronc=yes*?
   + If you have extra time left, verify the result in 5. 
+      - answer: 
+          $P(E=y|A=y, D=y) = \frac{P(E=y,A=y,D=y)}{P(A=y,D=y)}$
+    ```{r}
+    querygrain(simdagchest, nodes = c("lung", "bronce"), type="joint")
+    ```
   + If you still have time left, you can go through this genetics examples: https://www.r-bloggers.com/grain-genetics-example/.
   
 ### Issue of high dimensionality

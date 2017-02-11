@@ -266,7 +266,11 @@ querygrain(simdagchest, nodes =c(&quot;lung&quot;,&quot;bronc&quot;),type=&quot;
 </ol>
 <ul>
 <li>Inference: Using the network built in 7 and given the data of a patient that <em>asia=yes</em> and <em>dysp=yes</em>, what is the probablity of this patient getting <em>either</em> <em>tub</em> or <em>lung</em>, and what is the probablity of getting <em>bronc=yes</em>?</li>
-<li>If you have extra time left, verify the result in 5.</li>
+<li>If you have extra time left, verify the result in 5.
+<ul>
+<li>answer:</li>
+<li><span class="math inline">\(P(E=y|A=y, D=y) = \frac{P(E=y,A=y,D=y)}{P(A=y,D=y)}\)</span></li>
+</ul></li>
 <li>If you still have time left, you can go through this genetics examples: <a href="https://www.r-bloggers.com/grain-genetics-example/" class="uri">https://www.r-bloggers.com/grain-genetics-example/</a>.</li>
 </ul>
 <div id="issue-of-high-dimensionality" class="section level3">
